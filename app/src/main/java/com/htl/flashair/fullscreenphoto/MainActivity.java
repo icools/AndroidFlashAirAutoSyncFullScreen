@@ -30,12 +30,23 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setTitleColor(Color.rgb(65, 183, 216));
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setFullScreen();
         setContentView(R.layout.activity_main);
         findViews();
         setListener();
+    }
+
+    private void setFullScreen(){
+
+        getWindow().setTitleColor(Color.rgb(65, 183, 216));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     @Override
