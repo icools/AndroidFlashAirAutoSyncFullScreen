@@ -4,21 +4,28 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 // TODO check wifi status
 public class MainActivity extends Activity implements FlashAirHelper.FlashAirThumbnailCallBack {
 
-    Button button ;
-    ImageView imageView ;
-    final String mFilePath = "DCIM/13960824";
+    TextView mTextView;
+    ImageView mImageView;
+    final String mFilePath = "DCIM/14060825";
+    final int UPDATE_TIME_IN_MILLIS = 1000;
+    String mLastFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +36,6 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
         setContentView(R.layout.activity_main);
         findViews();
         setListener();
-        button.setVisibility(View.GONE);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
     }
 
     private void setListener() {
-        button.setOnClickListener(new OnClickListener() {
+        mImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -47,21 +53,27 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
         });
     }
 
-    void findViews(){
-        button = (Button)findViewById(R.id.button1);
-        imageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
-        button.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
+    private void downloadRawJpeg(){
+        String downloadFile = "http://flashair/" + mFilePath + "/" + mLastFileName;
+        Log.i(FlashAirHelper.TAG, "downloadFile:" + downloadFile);
+        Picasso.with(MainActivity.this).load(downloadFile).fit().into(mImageView);
     }
 
-    private void getLastThumbnail(){
+    void findViews() {
+        mTextView = (TextView) findViewById(R.id.txt_hint);
+        mImageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
+        //mButton.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
+    }
+
+    private void getLastThumbnail() {
         FlashAirHelper.getFolderList(mFilePath, this);
     }
 
-    private void checkHasNewFolder(){
+    private void checkHasNewFolder() {
         FlashAirHelper.checkHasNewFiles(this);
     }
 
-    private void startDelayPost(){
+    private void startDelayPost() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -69,11 +81,11 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
                 checkHasNewFolder();
                 startDelayPost();
             }
-        },1000);
+        }, UPDATE_TIME_IN_MILLIS);
     }
 
-    public void getLastFileThumbnail(String filePath,String fileName){
-        FlashAirHelper.getPictureThumbnail(MainActivity.this, filePath, fileName,this);
+    public void getLastFileThumbnail(String filePath, String fileName) {
+        FlashAirHelper.getPictureThumbnail(this, filePath, fileName, this);
     }
 
     @Override
@@ -84,25 +96,35 @@ public class MainActivity extends Activity implements FlashAirHelper.FlashAirThu
 
     @Override
     public void getThumbnail(BitmapDrawable bitmapDrawable) {
-        if(bitmapDrawable == null){
+        if (bitmapDrawable == null) {
             setTitle("Result null");
         }
         ImageView imageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
         imageView.setImageDrawable(bitmapDrawable);
+        downloadRawJpeg();
     }
 
     @Override
     public void getFolderList(String[] files) {
-        int lastFileIndex = files.length-1 ;
-        String lastFileName = files[lastFileIndex];
-        getLastFileThumbnail(mFilePath,lastFileName);
-        setTitle("Fetch Done:" + lastFileName);
+        if (files == null) {
+            setTitle("getFolderList null");
+        }
+        int lastFileIndex = files.length - 1;
+        mLastFileName = files[lastFileIndex];
+        //getLastFileThumbnail(mFilePath, mLastFileName);
+        downloadRawJpeg();
+        setTitle("Fetch Done:" + mLastFileName);
     }
 
     @Override
     public void checkNewFile(boolean hasNewFile) {
-        if(hasNewFile){
+        if (hasNewFile) {
+            Log.i(FlashAirHelper.TAG, "checkHasNewFolder");
             getLastThumbnail();
         }
+    }
+
+    public void setHint(String message) {
+        mTextView.setText(message);
     }
 }

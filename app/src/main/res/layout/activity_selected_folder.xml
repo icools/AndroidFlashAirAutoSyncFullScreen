@@ -10,27 +10,29 @@
  *  Released under the BSD 2-Clause license.
  *  http://flashair-developers.com/documents/license.html
  -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:keepScreenOn="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/txt_hint"
+    <Button
+        android:id="@+id/button_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
-        android:text="Start Take A Photo..."
+        android:text="Use this folder"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
-    <ImageView
-        android:id="@+id/imageView01"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY" />
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+</LinearLayout>
