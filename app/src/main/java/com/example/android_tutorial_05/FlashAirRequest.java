@@ -1,5 +1,9 @@
 package com.example.android_tutorial_05;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,10 +12,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 
 public class FlashAirRequest {	
@@ -43,14 +43,16 @@ public class FlashAirRequest {
 
 	static public Bitmap getBitmap(String command) {			
 		Bitmap resultBitmap = null;
+		ByteArrayOutputStream byteArrayOutputStream = null;
+		InputStream inputStream = null ;
 		try{
 			URL url = new URL(command);
 			URLConnection urlCon = url.openConnection();
 			urlCon.connect();
-			InputStream inputStream = urlCon.getInputStream();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			inputStream = urlCon.getInputStream();
+			byteArrayOutputStream = new ByteArrayOutputStream();
 			byte[] byteChunk = new byte[1024];
-			int bytesRead = 0;
+			int bytesRead ;
 			while( (bytesRead = inputStream.read(byteChunk)) != -1) {
 				byteArrayOutputStream.write(byteChunk, 0, bytesRead);
 			}
@@ -58,8 +60,7 @@ public class FlashAirRequest {
 			BitmapFactory.Options bfOptions = new BitmapFactory.Options();
 			bfOptions.inPurgeable = true;
 			resultBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bfOptions);
-			byteArrayOutputStream.close();
-			inputStream.close();
+
 		}catch(MalformedURLException e) {
 			Log.e("ERROR", "ERROR: " + e.toString());
 			e.printStackTrace();
@@ -67,8 +68,14 @@ public class FlashAirRequest {
 		catch(IOException e) {
 			Log.e("ERROR", "ERROR: " + e.toString());
 			e.printStackTrace();
+		}finally {
+			try {
+				byteArrayOutputStream.close();
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return resultBitmap;						
 	}
-	
 }

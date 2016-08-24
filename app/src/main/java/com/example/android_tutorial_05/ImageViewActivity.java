@@ -16,11 +16,8 @@ package com.example.android_tutorial_05;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -32,16 +29,16 @@ public class ImageViewActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_image_view);
-		getIntent();
-		imageView = (ImageView)findViewById(R.id.imageView1);
-		backButton = (Button)findViewById(R.id.button2);
-		getWindow().setTitleColor(Color.rgb(65, 183, 216));
-		backButton.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
-		Bundle extrasData = getIntent().getExtras();
-		String fileName = extrasData.getString("downloadFile");
-		String directory = extrasData.getString("directoryName");
-		downloadFile(fileName, directory);
+//		setContentView(R.layout.activity_image_view);
+//		getIntent();
+//		imageView = (ImageView)findViewById(R.id.imageView1);
+//		backButton = (Button)findViewById(R.id.button2);
+//		getWindow().setTitleColor(Color.rgb(65, 183, 216));
+//		backButton.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
+//		Bundle extrasData = getIntent().getExtras();
+//		String fileName = extrasData.getString("downloadFile");
+//		String directory = extrasData.getString("directoryName");
+//		downloadFile(fileName, directory);
 	}
 
 	
@@ -70,17 +67,17 @@ public class ImageViewActivity extends Activity {
 
 	void viewImage(Bitmap imageBitmap) {
 		// Show image in ImageView
-		backButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ImageViewActivity.this.finish();
-			}
-		});		
-		if (imageBitmap == null) {
-			imageView.setImageResource(R.drawable.ic_launcher);
-		}
-		else {
-			imageView.setImageBitmap(imageBitmap);
-		}
+//		backButton.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				ImageViewActivity.this.finish();
+//			}
+//		});
+//		if (imageBitmap == null) {
+//			imageView.setImageResource(R.drawable.ic_launcher);
+//		}
+//		else {
+//			imageView.setImageBitmap(imageBitmap);
+//		}
 	}
 } // End ImageViewActivity class

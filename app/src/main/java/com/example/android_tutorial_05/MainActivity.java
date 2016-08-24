@@ -1,18 +1,4 @@
-/**
- *  MainActivity.java
- *    An activity that gets the unformatted contents of a FlashAir card
- *    and displays them in an automatically refreshing and 
- *    clickable list with thumbnail icons on the Android screen.
- *
- *  Created by Anisha Smith, Fixstars Corporation on 2013/06/03.
- * 
- *  Copyright (c) 2013, TOSHIBA CORPORATION
- *  All rights reserved.
- *  Released under the BSD 2-Clause license.
- *  http://flashair-developers.com/documents/license.html
- */
 package com.example.android_tutorial_05;
-
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,13 +22,10 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
-
 import com.htl.flashair.fullscreenphoto.R;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -66,11 +49,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		getWindow().setTitleColor(Color.rgb(65, 183, 216));
+
 		viewingList = true; // Start out viewing the list
 		try {
 			// Set buttons
 			backButton = (Button)findViewById(R.id.button1);
-			getWindow().setTitleColor(Color.rgb(65, 183, 216));
 			backButton.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
 			backButton.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -162,7 +146,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 		directoryName = rootDir;
 		listDirectory(directoryName);
 	}
-
 	
 	public void listDirectory(String dir) {
 		// Prepare command directory path
@@ -172,13 +155,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 		else {
 			backButton.setEnabled(true);
 		}
-		currentDirText = (TextView)findViewById(R.id.textView1);
+		//currentDirText = (TextView)findViewById(R.id.textView1);
 		currentDirText.setText(dir + "/");
 		dir = "/" + dir;
 		ArrayList <NameValuePair> httpParams = new  ArrayList <NameValuePair> ();
 		httpParams.add(new BasicNameValuePair("DIR", dir));
 		dir = URLEncodedUtils.format (httpParams, "UTF-8" );
-		numFilesText = (TextView)findViewById(R.id.textView2);
+		//numFilesText = (TextView)findViewById(R.id.textView2);
 		// Fetch number of items in directory and display in a TextView
 		new AsyncTask<String, Void, String>(){
 			@Override
@@ -243,7 +226,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 			}
 			@Override
 			protected void onPostExecute(ListAdapter listAdapter) {
-				listView = (ListView)findViewById(R.id.listView1);
+				//listView = (ListView)findViewById(R.id.listView1);
 				ColorDrawable divcolor = new ColorDrawable(Color.rgb(17, 19, 58));
 				listView.setDivider(divcolor);
 				listView.setDividerHeight(1);

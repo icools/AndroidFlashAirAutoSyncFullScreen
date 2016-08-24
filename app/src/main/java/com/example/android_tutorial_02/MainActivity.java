@@ -3,65 +3,109 @@ package com.example.android_tutorial_02;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.htl.flashair.fullscreenphoto.FlashAirHelper;
 import com.htl.flashair.fullscreenphoto.R;
 
-public class MainActivity extends Activity implements OnClickListener {
+// TODO check wifi status
+public class MainActivity extends Activity {
+
+	Button button ;
+	ImageView imageView ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		Button button = (Button)findViewById(R.id.button1);
 		getWindow().setTitleColor(Color.rgb(65, 183, 216));
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_main);
+		//hideActionBar();
+		findViews();
+		setListener();
+	}
+
+	private void hideActionBar() {
+		getActionBar().hide();
+	}
+
+	private void setListener() {
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final String fileName = "DSC02934.JPG";
+				getLastThumbnail();
+				button.setVisibility(View.GONE);
+			}
+		});
+	}
+
+	void findViews(){
+		button = (Button)findViewById(R.id.button1);
+		imageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
 		button.getBackground().setColorFilter(Color.rgb(65, 183, 216), PorterDuff.Mode.SRC_IN);
-		button.setOnClickListener(this);
+	}
+
+	private void getLastThumbnail(){
+		final String filePath = "DCIM/13960824";
+		FlashAirHelper.getFolderList(filePath, new FlashAirHelper.FlashAirThumbnailCallBack() {
+			@Override
+			public void getThumbnail(BitmapDrawable bitmapDrawable) {
+
+			}
+
+			@Override
+			public void getFolderList(String[] files) {
+				int lastFileIndex = files.length-1 ;
+				String lastFileName = files[lastFileIndex];
+				getLastFileThumbnail(filePath,lastFileName);
+				setTitle("Fetch Done:" + lastFileName);
+				startDelayPost();
+			}
+		});
+	}
+
+	private void startDelayPost(){
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				getLastThumbnail();
+			}
+		},2000);
+	}
+
+	public void getLastFileThumbnail(String filePath,String fileName){
+			FlashAirHelper.getPictureThumbnail(MainActivity.this, filePath, fileName, new FlashAirHelper.FlashAirThumbnailCallBack() {
+
+			@Override
+			public void getThumbnail(BitmapDrawable bitmapDrawable) {
+				if(bitmapDrawable == null){
+					setTitle("Result null");
+				}
+				ImageView imageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
+				imageView.setImageDrawable(bitmapDrawable);
+			}
+
+			@Override
+			public void getFolderList(String[] files) {
+
+			}
+		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
-	@Override
-	public void onClick(View view) {
-		switch ( view.getId() ) {
-		case R.id.button1 :			
-			// Fetch number of items in directory and display in a TextView
-			new AsyncTask<String, Void, String>(){
-				@Override
-				protected String doInBackground(String... params) {
-					return FlashAirRequest.getString(params[0]);				
-				}
-				@Override
-				protected void onPostExecute(String fileCount) {
-					TextView textView = (TextView)findViewById(R.id.textView0);					
-					textView.setText("Items Found: " + fileCount);		
-				}
-			}.execute("http://flashair/command.cgi?op=101&DIR=/DCIM");		
-		
-			// Get a file list from FlashAir
-			new AsyncTask<String, Void, String>(){
-				@Override
-				protected String doInBackground(String... params) {	
-					return FlashAirRequest.getString(params[0]);
-				}
-				@Override
-				protected void onPostExecute(String text) {
-					TextView textView1 = (TextView)findViewById(R.id.textView1);
-					textView1.setText(text);
-				}
-			}.execute("http://flashair/command.cgi?op=100&DIR=/DCIM");					
-			break;
-		}
-	}
-} // End MainActivity class
+}
