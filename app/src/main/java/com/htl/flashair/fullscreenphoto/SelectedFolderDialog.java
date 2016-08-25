@@ -12,7 +12,7 @@ import android.widget.ListView;
 public class SelectedFolderDialog extends Dialog {
 
     interface SelectedCallback{
-        void onSelectedSucces(String path);
+        void onSelectedSuccess(String path);
     }
 
     ListView mListView ;
@@ -23,18 +23,27 @@ public class SelectedFolderDialog extends Dialog {
 
     public SelectedFolderDialog(final Context context,final SelectedCallback callback) {
         super(context);
-        this.setContentView(R.layout.activity_selected_folder);
+        setContentView(R.layout.activity_selected_folder);
+        findViews();
+        setListener(context,callback);
+        showFolder(context,mPath);
+    }
 
+    private void findViews(){
         mBtnSelected = (Button) findViewById(R.id.button_select);
+        mListView = (ListView) findViewById(R.id.listView);
+    }
+
+    private void setListener(final Context context,final SelectedCallback callback){
         mBtnSelected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SelectedFolderDialog.this.dismiss();
-                callback.onSelectedSucces(mPath);
+                callback.onSelectedSuccess(mPath);
             }
         });
 
-        mListView = (ListView) findViewById(R.id.listView);
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -47,7 +56,6 @@ public class SelectedFolderDialog extends Dialog {
 
             }
         });
-        showFolder(context,mPath);
     }
 
     private void showFolder(final Context context,String path){

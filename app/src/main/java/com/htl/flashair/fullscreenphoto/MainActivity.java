@@ -26,14 +26,14 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        startDiloagForSelectMonitorFolder();
     }
 
-    private void startDiloagForSelectMonitorFolder(){
+    private void startDialogForSelectMonitorFolder(){
         SelectedFolderDialog dialog = new SelectedFolderDialog(this, new SelectedFolderDialog.SelectedCallback() {
             @Override
-            public void onSelectedSucces(String path) {
+            public void onSelectedSuccess(String path) {
                 mFilePath = path ;
+                SettingManager.setLastSelectPath(MainActivity.this,mFilePath);
             }
         });
         dialog.show();
@@ -42,6 +42,10 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     protected void onResume() {
         super.onResume();
+        mFilePath = SettingManager.getLastSelectPath(this);
+        if(mFilePath == null){
+            startDialogForSelectMonitorFolder();
+        }
         startDelayPost();
     }
 
@@ -63,6 +67,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
             @Override
             public void onClick(View v) {
                 // TODO save image
+                startDialogForSelectMonitorFolder();
             }
         });
     }
