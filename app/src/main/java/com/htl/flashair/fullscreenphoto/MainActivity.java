@@ -26,6 +26,10 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        startDiloagForSelectMonitorFolder();
+    }
+
+    private void startDiloagForSelectMonitorFolder(){
         SelectedFolderDialog dialog = new SelectedFolderDialog(this, new SelectedFolderDialog.SelectedCallback() {
             @Override
             public void onSelectedSucces(String path) {
@@ -107,10 +111,6 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
             setHint("getThumbnail result null");
         }
         mImageView.setImageDrawable(bitmapDrawable);
-//        Picasso.with(this)
-//                .load(fileName)
-//                .noPlaceholder()
-//                .into(mImageView);
         FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
     }
 
@@ -118,6 +118,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     public void getFolderList(String[] files) {
         if (files == null || files.length == 0) {
             setHint("getFolderList null or empty");
+            return ;
         }
         int lastFileIndex = files.length - 1;
         mLastFileName = files[lastFileIndex];
