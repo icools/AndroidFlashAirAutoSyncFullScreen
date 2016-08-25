@@ -17,7 +17,13 @@ public class FlashAirHelper {
 
     final static String RESULT_SUCCESS = "1";
 
-    public static void checkHasNewFiles(final FlashAirThumbnailCallBack callback) {
+    static String TAG = "FlashAirHelper";
+
+    final static String OP_GET_FOLDER_COUNT = "101" ;
+    final static String OP_GET_FOLDER_LIST = "100" ;
+    final static String OP_CHECK_HAS_NEW_FILE = "102" ;
+
+    public static void checkHasNewFiles(final FlashAirCallBack callback) {
 
         new AsyncTask<String, Void, String>(){
             @Override
@@ -39,19 +45,6 @@ public class FlashAirHelper {
         }.execute(CommandOp.getCommand(OP_CHECK_HAS_NEW_FILE));
     }
 
-    public interface FlashAirThumbnailCallBack{
-        void getThumbnail(BitmapDrawable bitmapDrawable);
-        void getFolderList(String[] files);
-        void checkNewFile(boolean hasNewFile);
-        void onError(String errorMessage);
-    }
-
-    static String TAG = "FlashAirHelper";
-
-    final static String OP_GET_FOLDER_COUNT = "101" ;
-    final static String OP_GET_FOLDER_LIST = "100" ;
-    final static String OP_CHECK_HAS_NEW_FILE = "102" ;
-
     public static void getFolderCount(String folderName){
         new AsyncTask<String, Void, String>(){
             @Override
@@ -66,7 +59,7 @@ public class FlashAirHelper {
     }
 
     // Get a file list from FlashAir DCIM
-    public static void getFolderList(String folderName,final FlashAirThumbnailCallBack callBack){
+    public static void getFolderList(String folderName,final FlashAirCallBack callBack){
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
@@ -79,7 +72,6 @@ public class FlashAirHelper {
                 }
 
                 if(text == null || text.isEmpty()){
-                    // TODO
                     callBack.onError("Folder not exist or Wifi is not available.");
                     return ;
                 }
@@ -102,7 +94,7 @@ public class FlashAirHelper {
         }.execute(CommandOp.getCommand(OP_GET_FOLDER_LIST) + folderName);
     }
 
-    public static void getPictureThumbnail(final Context context, String directoryName, String fileName,final FlashAirThumbnailCallBack callBack){
+    public static void getPictureThumbnail(final Context context, String directoryName, String fileName,final FlashAirCallBack callBack){
         new AsyncTask<String, Void, BitmapDrawable>(){
             @Override
             protected BitmapDrawable doInBackground(String... params) {

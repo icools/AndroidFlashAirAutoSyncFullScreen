@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 // TODO check wifi status
-public class MainActivity extends BaseActivity implements FlashAirHelper.FlashAirThumbnailCallBack {
+// TODO add Thumbnail or RawJpeg Mode
+// TODO add Folder select function
+public class MainActivity extends BaseActivity implements FlashAirCallBack {
 
     TextView mTextView;
     ImageView mImageView;
