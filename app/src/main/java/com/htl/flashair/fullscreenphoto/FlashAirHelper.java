@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public class FlashAirHelper {
         void getThumbnail(BitmapDrawable bitmapDrawable);
         void getFolderList(String[] files);
         void checkNewFile(boolean hasNewFile);
+        void onError(String errorMessage);
     }
 
     static String TAG = "FlashAirHelper";
@@ -71,6 +75,12 @@ public class FlashAirHelper {
             @Override
             protected void onPostExecute(String text) {
                 if(callBack == null){
+                    return ;
+                }
+
+                if(text == null || text.isEmpty()){
+                    // TODO
+                    callBack.onError("Folder not exist or Wifi is not available.");
                     return ;
                 }
 
@@ -119,13 +129,24 @@ public class FlashAirHelper {
         }.execute(CommandOp.getFlashAirFilePath(directoryName,fileName));
     }
 
+    public static void downloadRawJpeg(ImageView imageView, String filePath, String fileName){
+        String downloadFile = CommandOp.getDownloadRawJpegPath(filePath ,fileName);
+        Log.i(FlashAirHelper.TAG, "downloadFile:" + downloadFile);
+        Picasso.with(imageView.getContext()).load(downloadFile).fit().into(imageView);
+    }
+
     private static class CommandOp{
+
         public static String getCommand(String opString){
             return "http://flashair/command.cgi?op=" + opString + "&DIR=/" ;
         }
 
         public static String getFlashAirFilePath(String directoryName,String fileName){
             return "http://flashair/thumbnail.cgi?" + directoryName + "/" + fileName;
+        }
+
+        public static String getDownloadRawJpegPath(String filePath, String fileName){
+            return "http://flashair/" + filePath + "/" + fileName;
         }
     }
 }
