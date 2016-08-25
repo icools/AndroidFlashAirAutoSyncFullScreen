@@ -16,7 +16,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
 
     TextView mTextView;
     ImageView mImageView;
-    final String mFilePath = "DCIM/14160825";
+    String mFilePath = "DCIM/14160825";
     final int UPDATE_TIME_IN_MILLIS = 1000;
     String mLastFileName;
     Handler mHandler ;
@@ -26,6 +26,13 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        SelectedFolderDialog dialog = new SelectedFolderDialog(this, new SelectedFolderDialog.SelectedCallback() {
+            @Override
+            public void onSelectedSucces(String path) {
+                mFilePath = path ;
+            }
+        });
+        dialog.show();
     }
 
     @Override
