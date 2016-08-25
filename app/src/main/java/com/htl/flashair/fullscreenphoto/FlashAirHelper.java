@@ -6,9 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-
 import com.squareup.picasso.Picasso;
-
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -94,13 +92,15 @@ public class FlashAirHelper {
         }.execute(CommandOp.getCommand(OP_GET_FOLDER_LIST) + folderName);
     }
 
-    public static void getPictureThumbnail(final Context context, String directoryName, String fileName,final FlashAirCallBack callBack){
+    public static void getPictureThumbnail(final Context context, String directoryName, final String fileName, final FlashAirCallBack callBack){
         new AsyncTask<String, Void, BitmapDrawable>(){
+            String _fileName = null;
             @Override
             protected BitmapDrawable doInBackground(String... params) {
                 String urlFileName = params[0] ;
                 BitmapDrawable drawnIcon = null;
                 if((urlFileName.toLowerCase(Locale.getDefault()).endsWith(".jpg")) || (urlFileName.toLowerCase(Locale.getDefault()).endsWith(".jpeg")) ) {
+                    _fileName = urlFileName;
                     try {
                         Bitmap thumbnail = FlashAirRequest.getBitmap(urlFileName);
                         drawnIcon = new BitmapDrawable(context.getResources(), thumbnail);
@@ -116,7 +116,7 @@ public class FlashAirHelper {
                 if(callBack == null){
                     return ;
                 }
-                callBack.getThumbnail(drawnIcon);
+                callBack.getThumbnail(drawnIcon,_fileName);
             }
         }.execute(CommandOp.getFlashAirFilePath(directoryName,fileName));
     }
@@ -124,7 +124,10 @@ public class FlashAirHelper {
     public static void downloadRawJpeg(ImageView imageView, String filePath, String fileName){
         String downloadFile = CommandOp.getDownloadRawJpegPath(filePath ,fileName);
         Log.i(FlashAirHelper.TAG, "downloadFile:" + downloadFile);
-        Picasso.with(imageView.getContext()).load(downloadFile).fit().into(imageView);
+        Picasso.with(imageView.getContext())
+                .load(downloadFile)
+                .noPlaceholder()
+                .into(imageView);
     }
 
     private static class CommandOp{

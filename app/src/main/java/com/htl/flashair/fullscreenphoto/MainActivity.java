@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
         mImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO save image
             }
         });
     }
@@ -95,12 +95,15 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     }
 
     @Override
-    public void getThumbnail(BitmapDrawable bitmapDrawable) {
+    public void getThumbnail(BitmapDrawable bitmapDrawable,String fileName) {
         if (bitmapDrawable == null) {
             setHint("getThumbnail result null");
         }
-        ImageView imageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
-        imageView.setImageDrawable(bitmapDrawable);
+        mImageView.setImageDrawable(bitmapDrawable);
+//        Picasso.with(this)
+//                .load(fileName)
+//                .noPlaceholder()
+//                .into(mImageView);
         FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
     }
 
@@ -111,7 +114,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
         }
         int lastFileIndex = files.length - 1;
         mLastFileName = files[lastFileIndex];
-        //getLastFileThumbnail(mFilePath, mLastFileName);
+        getLastFileThumbnail(mFilePath, mLastFileName);
         FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
         setHint("Fetch Done:" + mLastFileName);
     }
