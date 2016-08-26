@@ -76,7 +76,14 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
             @Override
             public void onClick(View v) {
                 // TODO save image
-
+                int visibility = findViewById(R.id.group_dashboard).getVisibility();
+                int visibilityResult ;
+                if(visibility == View.GONE){
+                    visibilityResult = View.VISIBLE;
+                }else{
+                    visibilityResult = View.GONE;
+                }
+                findViewById(R.id.group_dashboard).setVisibility(visibilityResult);
             }
         });
 
