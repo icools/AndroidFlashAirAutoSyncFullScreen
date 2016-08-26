@@ -3,10 +3,16 @@ package com.htl.flashair.fullscreenphoto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -121,13 +127,24 @@ public class FlashAirHelper {
         }.execute(CommandOp.getFlashAirFilePath(directoryName,fileName));
     }
 
-    public static void downloadRawJpeg(ImageView imageView, String filePath, String fileName){
+    public static void downloadRawJpeg(final ImageView imageView, String filePath, String fileName, final Handler callBackHandler){
         String downloadFile = CommandOp.getDownloadRawJpegPath(filePath ,fileName);
         Log.i(FlashAirHelper.TAG, "downloadFile:" + downloadFile);
         Picasso.with(imageView.getContext())
                 .load(downloadFile)
+                .resize(800,480)
                 .noPlaceholder()
                 .into(imageView);
+//        new Target() {
+//                    @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        imageView.setImageBitmap(bitmap);
+//                        if(callBackHandler != null) {
+//                            callBackHandler.sendEmptyMessage(0);
+//                        }
+//                    }
+//                    @Override public void onBitmapFailed(Drawable errorDrawable) { }
+//                    @Override public void onPrepareLoad(Drawable placeHolderDrawable) { }
+//                });
     }
 
     private static class CommandOp{

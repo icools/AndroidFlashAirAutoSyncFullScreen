@@ -1,8 +1,10 @@
 package com.htl.flashair.fullscreenphoto;
 
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,17 +14,20 @@ import android.widget.TextView;
 // TODO check wifi status
 // TODO add Thumbnail or RawJpeg Mode
 // TODO add Folder select function
+// TODO add Exif info dashboard ?
+// TODO lock screen mode
+// TODO add  download progress
+// TODO add get screen size
 public class MainActivity extends BaseActivity implements FlashAirCallBack {
 
     TextView mTextView;
+    TextView mTextCurrentPath ;
+    TextView mTextScanNewPhotoStatus;
     ImageView mImageView;
     String mFilePath = "DCIM/14160825";
-    final int UPDATE_TIME_IN_MILLIS = 1000;
     String mLastFileName;
     Handler mHandler ;
     Runnable mRunnable ;
-
-    boolean bUsingSetting = true ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +49,9 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     protected void onResume() {
         super.onResume();
-        if(bUsingSetting) {
-            mFilePath = SettingManager.getLastSelectPath(this);
-            if (mFilePath == null) {
-                startDialogForSelectMonitorFolder();
-            }
+        mFilePath = SettingManager.getLastSelectPath(this);
+        if (mFilePath == null) {
+            startDialogForSelectMonitorFolder();
         }
         startDelayPost();
     }
@@ -61,8 +64,10 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
 
     @Override
     public void findViews() {
-        mTextView = (TextView) findViewById(R.id.txt_hint);
-        mImageView = (ImageView) MainActivity.this.findViewById(R.id.imageViewPhoto);
+        mTextView = (TextView) findViewById(R.id.text_status);
+        mTextCurrentPath = (TextView) findViewById(R.id.text_current_path);
+        mTextScanNewPhotoStatus = (TextView) findViewById(R.id.text_scan_new_photo);
+        mImageView = (ImageView) findViewById(R.id.imageViewPhoto);
     }
 
     @Override
@@ -71,7 +76,15 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
             @Override
             public void onClick(View v) {
                 // TODO save image
+
+            }
+        });
+
+        mImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
                 startDialogForSelectMonitorFolder();
+                return false;
             }
         });
     }
@@ -81,7 +94,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
         return R.layout.activity_main;
     }
 
-    private void getLastThumbnail() {
+    private void getFolderList() {
         FlashAirHelper.getFolderList(mFilePath, this);
     }
 
@@ -93,6 +106,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                setScanPhotoStatus();
                 checkHasNewFolder();
                 startDelayPost();
             }
@@ -109,37 +123,40 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public void getThumbnail(BitmapDrawable bitmapDrawable,String fileName) {
         if (bitmapDrawable == null) {
-            setHint("getThumbnail result null");
+            showStatus("getThumbnail result null");
         }
         mImageView.setImageDrawable(bitmapDrawable);
-        FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
     }
 
     @Override
     public void getFolderList(String[] files) {
         if (files == null || files.length == 0) {
-            setHint("getFolderList null or empty");
+            showStatus("Get folder list result is null or empty.");
             return ;
         }
-        mLastFileName = findLastestJpegFile(files);
+        mLastFileName = findLatestJpegFile(files);
         if(mLastFileName == null){
-            setHint("Can not find jpeg");
+            showStatus("Have no jpeg inside");
             return;
         }
-        getLastFileThumbnail(mFilePath, mLastFileName);
-        FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
-        setHint("Fetch Done:" + mLastFileName);
+        onFindLatestJpegFile(mLastFileName);
     }
 
-    public String findLastestJpegFile(String[] files){
+    private void onFindLatestJpegFile(final String lastFileName){
+        getLastFileThumbnail(mFilePath, lastFileName);
+        FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,lastFileName,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                showStatus("Fetch:" + lastFileName);
+            }
+        });
+        showStatus("Start to fetch:" + lastFileName,true);
+    }
+
+    public String findLatestJpegFile(String[] files){
         for(int i = files.length-1 ; i >= 0 ; i--){
             String fileName = files[i].toUpperCase();
             if(fileName.contains(".JPG")){
@@ -152,17 +169,35 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     public void checkNewFile(boolean hasNewFile) {
         if (hasNewFile) {
-            setHint("found new file!");
-            getLastThumbnail();
+            showStatus("found new file!");
+            getFolderList();
         }
     }
 
     @Override
     public void onError(String errorMessage) {
-        setHint(errorMessage);
+        showStatus(errorMessage);
     }
 
-    public void setHint(String message) {
+    public void showStatus(String message) {
+        showStatus(message,false);
+    }
+    public void showStatus(String message,boolean bChangeColor) {
         mTextView.setText(message);
+        int colorResId = bChangeColor ? Color.RED : Color.WHITE ;
+        mTextView.setTextColor(colorResId);
+
+        if(bChangeColor){
+            mTextView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mTextView.setTextColor(Color.WHITE);
+                }
+            },3000);
+        }
+    }
+
+    public void setScanPhotoStatus(){
+        mTextScanNewPhotoStatus.setText("Checking new photo : " + System.currentTimeMillis());
     }
 }

@@ -1,43 +1,85 @@
-<!--
- *  activity_main.xml
- *    A layout file for an activity that gets the unformatted contents of a FlashAir card
- *    and displays them on the Android screen.
- *
- *  Created by Munehiro Doi, Fixstars Corporation on 2013/05/20.
- * 
- *  Copyright (c) 2013, TOSHIBA CORPORATION
- *  All rights reserved.
- *  Released under the BSD 2-Clause license.
- *  http://flashair-developers.com/documents/license.html
- -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:keepScreenOn="true"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/group_dashboard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="15sp">
+
         <TextView
-            android:id="@+id/txt_hint"
-            android:layout_width="match_parent"
+            android:id="@+id/text_current_path"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:cacheColorHint="#00000000"
-            android:layout_margin="15sp"
-            android:text="Start Take A Photo..."
             android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:textSize="16sp"
+            tools:text="/DCIM/1283983/" />
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:cacheColorHint="#00000000"
+            android:text="Start take a photo..."
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <!-- Wifi -->
+        <TextView
+            android:id="@+id/text_wifi_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:text="WIFI : flashair_b238938102823" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="15sp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="4sp" />
+
+            <TextView
+                android:id="@+id/text_scan_new_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:cacheColorHint="#00000000"
+                android:text="Start take a photo..."
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>
