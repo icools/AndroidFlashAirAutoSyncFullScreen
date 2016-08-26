@@ -22,6 +22,8 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     Handler mHandler ;
     Runnable mRunnable ;
 
+    boolean bUsingSetting = true ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +44,11 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     protected void onResume() {
         super.onResume();
-        mFilePath = SettingManager.getLastSelectPath(this);
-        if(mFilePath == null){
-            startDialogForSelectMonitorFolder();
+        if(bUsingSetting) {
+            mFilePath = SettingManager.getLastSelectPath(this);
+            if (mFilePath == null) {
+                startDialogForSelectMonitorFolder();
+            }
         }
         startDelayPost();
     }
@@ -58,7 +62,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     public void findViews() {
         mTextView = (TextView) findViewById(R.id.txt_hint);
-        mImageView = (ImageView) MainActivity.this.findViewById(R.id.imageView01);
+        mImageView = (ImageView) MainActivity.this.findViewById(R.id.imageViewPhoto);
     }
 
     @Override
@@ -125,11 +129,24 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
             setHint("getFolderList null or empty");
             return ;
         }
-        int lastFileIndex = files.length - 1;
-        mLastFileName = files[lastFileIndex];
+        mLastFileName = findLastestJpegFile(files);
+        if(mLastFileName == null){
+            setHint("Can not find jpeg");
+            return;
+        }
         getLastFileThumbnail(mFilePath, mLastFileName);
         FlashAirHelper.downloadRawJpeg(mImageView,mFilePath,mLastFileName);
         setHint("Fetch Done:" + mLastFileName);
+    }
+
+    public String findLastestJpegFile(String[] files){
+        for(int i = files.length-1 ; i >= 0 ; i--){
+            String fileName = files[i].toUpperCase();
+            if(fileName.contains(".JPG")){
+                return fileName;
+            }
+        }
+        return null;
     }
 
     @Override
