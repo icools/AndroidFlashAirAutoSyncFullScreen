@@ -7,4 +7,5 @@ public interface FlashAirCallBack {
     void getFolderList(String[] files);
     void checkNewFile(boolean hasNewFile);
     void onError(String errorMessage);
+    void onUnknowHost();
 }

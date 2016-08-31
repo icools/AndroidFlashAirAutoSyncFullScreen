@@ -49,10 +49,10 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     protected void onResume() {
         super.onResume();
-//        mFilePath = SettingManager.getLastSelectPath(this);
-//        if (mFilePath == null) {
-//            startDialogForSelectMonitorFolder();
-//        }
+        mFilePath = SettingManager.getLastSelectPath(this);
+        if (mFilePath == null) {
+            startDialogForSelectMonitorFolder();
+        }
         startDelayPost();
     }
 
@@ -190,6 +190,11 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     public void onError(String errorMessage) {
         showStatus(errorMessage);
+    }
+
+    @Override
+    public void onUnknowHost() {
+        showStatus("onUnknowHost...");
     }
 
     public void showStatus(String message) {

@@ -15,26 +15,27 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 
 public class FlashAirRequest {	
-	static public String getString(String command) {	
+	static public String getString(String command) throws UnknownHostException{
 		String result = "";
-		try{
+		try {
 			URL url = new URL(command);
 			URLConnection urlCon = url.openConnection();
 			urlCon.connect();
-			InputStream inputStream = urlCon.getInputStream();		 
-		    BufferedReader bufreader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-	        StringBuffer strbuf = new StringBuffer();
-	        String str;
-	        while ((str = bufreader.readLine()) != null) {
-	        	if(strbuf.toString() != "") strbuf.append("\n");
-	        	strbuf.append(str);
-	        }
-	        result =  strbuf.toString();												
+			InputStream inputStream = urlCon.getInputStream();
+			BufferedReader bufreader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+			StringBuffer strbuf = new StringBuffer();
+			String str;
+			while ((str = bufreader.readLine()) != null) {
+				if (strbuf.toString() != "") strbuf.append("\n");
+				strbuf.append(str);
+			}
+			result = strbuf.toString();
+		}catch(UnknownHostException e){
+			throw e;
 		}catch(MalformedURLException e) {
 			Log.e("ERROR", "ERROR: " + e.toString());
 			e.printStackTrace();
-		}
-		catch(IOException e) {
+		}catch(IOException e) {
 			Log.e("ERROR", "ERROR: " + e.toString());
 			e.printStackTrace();
 		}
@@ -61,7 +62,6 @@ public class FlashAirRequest {
 			bfOptions.inPurgeable = true;
 			resultBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bfOptions);
 		}catch(UnknownHostException e){
-			e.printStackTrace();
 			throw e;
 		}catch(MalformedURLException e) {
 			Log.e("ERROR", "ERROR: " + e.toString());

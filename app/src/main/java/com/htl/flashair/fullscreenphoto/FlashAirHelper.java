@@ -14,21 +14,27 @@ import java.util.Locale;
 
 public class FlashAirHelper {
 
-    final static String RESULT_SUCCESS = "1";
+    private final static String RESULT_SUCCESS = "1";
 
-    static String TAG = "FlashAirHelper";
+    private static String TAG = "FlashAirHelper";
 
-    final static String OP_GET_FOLDER_COUNT = "101" ;
-    final static String OP_GET_FOLDER_LIST = "100" ;
-    final static String OP_CHECK_HAS_NEW_FILE = "102" ;
+    private final static String OP_GET_FOLDER_COUNT = "101" ;
+    private final static String OP_GET_FOLDER_LIST = "100" ;
+    private final static String OP_CHECK_HAS_NEW_FILE = "102" ;
 
     public static void checkHasNewFiles(final FlashAirCallBack callback) {
 
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
-                return FlashAirRequest.getString(params[0]);
+                try {
+                    return FlashAirRequest.getString(params[0]);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
+
             @Override
             protected void onPostExecute(String result) {
                 if(callback == null){
@@ -37,8 +43,9 @@ public class FlashAirHelper {
 
                 if(result == null){
                     callback.checkNewFile(false);
+                    callback.onUnknowHost();
+                    return ;
                 }
-
                 callback.checkNewFile(result.equals(RESULT_SUCCESS));
             }
         }.execute(CommandOp.getCommand(OP_CHECK_HAS_NEW_FILE));
@@ -48,7 +55,12 @@ public class FlashAirHelper {
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
-                return FlashAirHelper.RequestHelper.getFolderCount(folderName);
+                try {
+                    return RequestHelper.getFolderCount(folderName);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
             @Override
             protected void onPostExecute(String fileCount) {
@@ -62,11 +74,22 @@ public class FlashAirHelper {
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
-                return FlashAirHelper.RequestHelper.getFolderList(folderName);
+                try {
+                    return RequestHelper.getFolderList(folderName);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
+
             @Override
             protected void onPostExecute(String text) {
                 if(callBack == null){
+                    return ;
+                }
+
+                if(text == null){
+                    callBack.onUnknowHost();
                     return ;
                 }
 
@@ -78,6 +101,7 @@ public class FlashAirHelper {
                 String[] result = text.split("\n");
                 ArrayList<String> _fileNameList = new ArrayList<>();
                 for(int i = 0 ; i < result.length ; i++){
+                    Log.i(TAG,"getFolderList:" + result[i]);
                     String fileFullPath = result[i];
                     if(!fileFullPath.contains(",")){
                         continue;
@@ -158,11 +182,11 @@ public class FlashAirHelper {
     }
 
     public static class RequestHelper{
-        public static String getFolderList(String folderName){
+        public static String getFolderList(String folderName) throws UnknownHostException{
             return FlashAirRequest.getString(CommandOp.getCommand(OP_GET_FOLDER_LIST) + folderName);
         }
 
-        public static String getFolderCount(String folderName){
+        public static String getFolderCount(String folderName)  throws UnknownHostException{
             return FlashAirRequest.getString(CommandOp.getCommand(OP_GET_FOLDER_COUNT) + folderName);
         }
     }
