@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -23,8 +22,9 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     TextView mTextView;
     TextView mTextCurrentPath ;
     TextView mTextScanNewPhotoStatus;
+    TextView mTextViewWifi;
     ImageView mImageView;
-    String mFilePath = "DCIM/14160825";
+    String mFilePath = "DCIM/14360826";
     String mLastFileName;
     Handler mHandler ;
     Runnable mRunnable ;
@@ -49,10 +49,10 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     protected void onResume() {
         super.onResume();
-        mFilePath = SettingManager.getLastSelectPath(this);
-        if (mFilePath == null) {
-            startDialogForSelectMonitorFolder();
-        }
+//        mFilePath = SettingManager.getLastSelectPath(this);
+//        if (mFilePath == null) {
+//            startDialogForSelectMonitorFolder();
+//        }
         startDelayPost();
     }
 
@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
     @Override
     public void findViews() {
         mTextView = (TextView) findViewById(R.id.text_status);
+        mTextViewWifi = (TextView) findViewById(R.id.text_wifi_name);
         mTextCurrentPath = (TextView) findViewById(R.id.text_current_path);
         mTextScanNewPhotoStatus = (TextView) findViewById(R.id.text_scan_new_photo);
         mImageView = (ImageView) findViewById(R.id.imageViewPhoto);
@@ -113,12 +114,17 @@ public class MainActivity extends BaseActivity implements FlashAirCallBack {
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                updateCurrentWifiSsid();
                 setScanPhotoStatus();
                 checkHasNewFolder();
                 startDelayPost();
             }
         };
         mHandler.postDelayed(mRunnable, UPDATE_TIME_IN_MILLIS);
+    }
+
+    private void updateCurrentWifiSsid() {
+        mTextViewWifi.setText(WifiHelper.getCurrentSsid(this));
     }
 
     private void removeDelayPost(){

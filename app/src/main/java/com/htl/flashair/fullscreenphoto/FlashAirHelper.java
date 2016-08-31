@@ -3,16 +3,11 @@ package com.htl.flashair.fullscreenphoto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
-
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -49,25 +44,25 @@ public class FlashAirHelper {
         }.execute(CommandOp.getCommand(OP_CHECK_HAS_NEW_FILE));
     }
 
-    public static void getFolderCount(String folderName){
+    public static void getFolderCount(final String folderName){
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
-                return FlashAirRequest.getString(params[0]);
+                return FlashAirHelper.RequestHelper.getFolderCount(folderName);
             }
             @Override
             protected void onPostExecute(String fileCount) {
                 Log.i(TAG,"ListCount:" + fileCount);
             }
-        }.execute(CommandOp.getCommand(OP_GET_FOLDER_COUNT) + folderName);
+        }.execute();
     }
 
     // Get a file list from FlashAir DCIM
-    public static void getFolderList(String folderName,final FlashAirCallBack callBack){
+    public static void getFolderList(final String folderName, final FlashAirCallBack callBack){
         new AsyncTask<String, Void, String>(){
             @Override
             protected String doInBackground(String... params) {
-                return FlashAirRequest.getString(params[0]);
+                return FlashAirHelper.RequestHelper.getFolderList(folderName);
             }
             @Override
             protected void onPostExecute(String text) {
@@ -95,7 +90,7 @@ public class FlashAirHelper {
                 _fileNameList.toArray(fileNameList);
                 callBack.getFolderList(fileNameList);
             }
-        }.execute(CommandOp.getCommand(OP_GET_FOLDER_LIST) + folderName);
+        }.execute();
     }
 
     public static void getPictureThumbnail(final Context context, String directoryName, final String fileName, final FlashAirCallBack callBack){
@@ -159,6 +154,16 @@ public class FlashAirHelper {
 
         public static String getDownloadRawJpegPath(String filePath, String fileName){
             return "http://flashair/" + filePath + "/" + fileName;
+        }
+    }
+
+    public static class RequestHelper{
+        public static String getFolderList(String folderName){
+            return FlashAirRequest.getString(CommandOp.getCommand(OP_GET_FOLDER_LIST) + folderName);
+        }
+
+        public static String getFolderCount(String folderName){
+            return FlashAirRequest.getString(CommandOp.getCommand(OP_GET_FOLDER_COUNT) + folderName);
         }
     }
 }
