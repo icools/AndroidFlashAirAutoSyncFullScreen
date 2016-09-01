@@ -101,7 +101,7 @@ public class SelectedFolderDialog extends Dialog {
             }
 
             @Override
-            public void onUnknowHost() {
+            public void onUnknownHost() {
                 // can ping the flashair , retry
                 showFolder(context,path);
             }

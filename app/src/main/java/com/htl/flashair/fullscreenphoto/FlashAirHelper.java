@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+// TODO add auto find folder
 public class FlashAirHelper {
 
     private final static String RESULT_SUCCESS = "1";
@@ -21,6 +22,9 @@ public class FlashAirHelper {
     private final static String OP_GET_FOLDER_COUNT = "101" ;
     private final static String OP_GET_FOLDER_LIST = "100" ;
     private final static String OP_CHECK_HAS_NEW_FILE = "102" ;
+
+    private final static int MAX_PHONE_RESIZE_WIDTH = 800;
+    private final static int AUTO_FIT_PHOTO_HEIGHT_INDEX = 0;
 
     public static void checkHasNewFiles(final FlashAirCallBack callback) {
 
@@ -43,7 +47,7 @@ public class FlashAirHelper {
 
                 if(result == null){
                     callback.checkNewFile(false);
-                    callback.onUnknowHost();
+                    callback.onUnknownHost();
                     return ;
                 }
                 callback.checkNewFile(result.equals(RESULT_SUCCESS));
@@ -89,7 +93,7 @@ public class FlashAirHelper {
                 }
 
                 if(text == null){
-                    callBack.onUnknowHost();
+                    callBack.onUnknownHost();
                     return ;
                 }
 
@@ -151,7 +155,7 @@ public class FlashAirHelper {
         Log.i(FlashAirHelper.TAG, "downloadFile:" + downloadFile);
         Picasso.with(imageView.getContext())
                 .load(downloadFile)
-                .resize(800,480)
+                .resize(MAX_PHONE_RESIZE_WIDTH,AUTO_FIT_PHOTO_HEIGHT_INDEX)
                 .noPlaceholder()
                 .into(imageView);
 //        new Target() {

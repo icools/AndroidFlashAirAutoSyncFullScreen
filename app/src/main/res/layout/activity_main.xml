@@ -6,13 +6,29 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <!-- Background Text -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
         android:layout_gravity="center"
-        android:text="FlashAir AutoViewer"/>
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="FlashAir AutoViewer"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="long press for select folder"/>
+
+    </LinearLayout>
+
+    <!-- Phone -->
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
@@ -20,57 +36,23 @@
 
     <FrameLayout
         android:id="@+id/frame_dashboard"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/group_dashboard"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15sp">
-
-            <TextView
-                android:id="@+id/text_current_path"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cacheColorHint="#00000000"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="/DCIM/1283983/" />
-
-            <TextView
-                android:id="@+id/text_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:cacheColorHint="#00000000"
-                android:text="Start take a photo..."
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <!-- Wifi -->
-            <TextView
-                android:id="@+id/text_wifi_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cacheColorHint="#00000000"
-                android:text="WIFI : flashair_b238938102823"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="15sp"
-            android:orientation="vertical">
+            android:cacheColorHint="#00000000"
+            android:text="Start take a photo..."
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom">
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -82,7 +64,8 @@
 
                 <TextView
                     android:id="@+id/text_scan_new_photo"
-                    android:layout_width="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:cacheColorHint="#00000000"
@@ -92,7 +75,13 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/text_dashboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                tools:text="WIFI:falshair_239jhsldkf3n\nPath:/DCIM/1192834/"/>
+
     </FrameLayout>
 
 </FrameLayout>

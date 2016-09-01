@@ -6,7 +6,7 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.htl.flashair.fullscreenphoto"
-        minSdkVersion 14
+        minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"

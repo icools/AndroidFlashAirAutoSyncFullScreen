@@ -45,7 +45,7 @@ public abstract class BaseActivity extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    private void fullScreenDelay(){
+    void fullScreenDelay(){
         this.getWindow().getDecorView().postDelayed(new Runnable() {
             @Override
             public void run() {
