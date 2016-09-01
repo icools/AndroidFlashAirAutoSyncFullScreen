@@ -22,3 +22,5 @@ https://flashair-developers.com//zh/
 
 ### 更多關於 Toshiba FlashAir Wifi Sdcard 資訊: 
 https://flashair-developers.com//zh/
+
+![alt tag](https://dl.dropboxusercontent.com/u/3145207/github/flashair_01.png)
